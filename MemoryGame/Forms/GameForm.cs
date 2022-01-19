@@ -1,5 +1,4 @@
-﻿using MemoryGame.Models.Enum;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,6 +7,19 @@ namespace MemoryGame.Forms
 {
     public partial class GameForm : Form
     {
+        public static Bitmap 卡牌背面 = Properties.Resources.卡牌背面;
+        public static Bitmap[] CardPool = new Bitmap[]
+        {
+            Properties.Resources.圖片1,
+            Properties.Resources.圖片2,
+            Properties.Resources.圖片3,
+            Properties.Resources.圖片4,
+            Properties.Resources.圖片5,
+            Properties.Resources.圖片6,
+            Properties.Resources.圖片7,
+            Properties.Resources.圖片8
+        };
+
         /// <summary>
         /// 此難度需要的牌數量
         /// </summary>
@@ -83,12 +95,11 @@ namespace MemoryGame.Forms
 
             // 取得卡池
             Random rnd = new Random();
-            Bitmap[] cardPool = CardEnum.GetCards
-                                        .OrderBy(x => rnd.Next())
+            Bitmap[] takeCard = CardPool.OrderBy(x => rnd.Next())
                                         .Take(CardPairCount)
                                         .ToArray();
             // 複製一份
-            cardPool = cardPool.Concat(cardPool)
+            takeCard = takeCard.Concat(takeCard)
                                .OrderBy(x => rnd.Next())
                                .Take(CardPairCount * 2)
                                .ToArray();
@@ -97,8 +108,8 @@ namespace MemoryGame.Forms
             for (int i = 1; i < 17; i++)
             {
                 PictureBox pictureBox = (PictureBox)GamePanel.Controls.Find("pictureBox" + i.ToString(), true)[0];
-                pictureBox.Image = cardPool[i - 1];
-                pictureBox.Tag = cardPool[i - 1];
+                pictureBox.Image = takeCard[i - 1];
+                pictureBox.Tag = takeCard[i - 1];
                 pictureBox.Visible = true;
                 pictureBox.Enabled = false;
                 pictureBox.BorderStyle = BorderStyle.None;
@@ -147,8 +158,8 @@ namespace MemoryGame.Forms
         private void MaskTimer_Tick(object sender, EventArgs e)
         {
             MaskTimer.Enabled = false;
-            FirstClick.Image = CardEnum.卡牌背面;
-            SecondClick.Image = CardEnum.卡牌背面;
+            FirstClick.Image = 卡牌背面;
+            SecondClick.Image = 卡牌背面;
             // 解除鎖定
             UnlockPictureBox();
         }
@@ -335,7 +346,7 @@ namespace MemoryGame.Forms
             {
                 if (ctl is PictureBox pictureBox)
                 {
-                    pictureBox.Image = CardEnum.卡牌背面;
+                    pictureBox.Image = 卡牌背面;
                 }
             }
         }
